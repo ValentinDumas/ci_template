@@ -18,8 +18,8 @@ Some checks are performed on:
 -  Doxygen
 -  GitCheck
 -  CppCheck
-- Codacy
-- Codecov
+-   Codacy
+-   Codecov
 - Coveralls
 - Google Sanitizers
 - Valgrind
