@@ -29,28 +29,6 @@ add_subdirectory(src)
 add_library(project_src_lib STATIC include/hello.h src/hello.cpp)
 
 # ------------------------------------------------------------------------------
-# OS Specific Options
-# ------------------------------------------------------------------------------
-if (APPLE)
-    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-    add_definitions(-D__GLIBCXX__)
-endif (APPLE)
-
-#option(CMAKE_USE_WIN32_THREADS_INIT "using WIN32 threads" ON)
-#option(gtest_disable_pthreads "Disable uses of pthreads in gtest." ON)
-
-# ------------------------------------------------------------------------------
-# Coverage
-# ------------------------------------------------------------------------------
-if(ENABLE_COVERAGE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g ")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftest-coverage")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
-endif()
-
-# ------------------------------------------------------------------------------
 # Tests
 # ------------------------------------------------------------------------------
 include(CTest) # enable_tests()
