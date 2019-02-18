@@ -6,8 +6,8 @@ platform: x64
 #
 environment:
   global:
-    CYG_ROOT: C:\cygwin_ci_base
-    CYG_BASH: C:\cygwin_ci_base\bin\bash
+    CYG_ROOT: C:\cygwin_ci_template
+    CYG_BASH: C:\cygwin_ci_template\bin\bash
     CYG_MIRROR: http://mirrors.kernel.org/sourceware/cygwin/
     CYG_PACKAGES: git,make,gcc-core,gcc-g++,cmake
 
@@ -23,6 +23,6 @@ build_script:
   - mkdir build_msbuild
   - cd build_msbuild
   - cmake -DWINDOWS=1 -G "Visual Studio 15 2017 Win64" ..
-  - msbuild ci_base.sln
+  - msbuild ci_template.sln
   # - ctest
   - cd ..

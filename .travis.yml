@@ -172,7 +172,7 @@ matrix:
 #          - g++-6
 #      coverity_scan:
 #        project:
-#          name: "ValentinDumas/ci_base"
+#          name: "ValentinDumas/ci_template"
 #          description: "A simple example of how to setup a complete CI environment for C and C++"
 #        notification_email: sp4rk76@gmail.com
 #        build_command_prepend: "cmake -DCMAKE_CXX_COMPILER=g++-6 .."
