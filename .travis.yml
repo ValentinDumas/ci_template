@@ -217,7 +217,6 @@ matrix:
       - cmake -DENABLE_COVERAGE=ON -DCMAKE_CXX_COMPILER="g++-6" ..
       - make
       - make test
-      - mdkir build
       - cd ..
       - |
         coveralls --build-root build --gcov-options '\-lp' \
@@ -230,7 +229,7 @@ matrix:
           -e build/CMakeFiles/3.8.0 \
           -e build/CMakeFiles/feature_tests.c \
           -e build/CMakeFiles/feature_tests.cxx
-#      - coveralls --exclude deps --exclude test --exclude build --gcov-options '\-lp'
+          
   #
   # Google Address Sanitizer
   #
