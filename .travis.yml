@@ -217,6 +217,7 @@ matrix:
       - cmake -DENABLE_COVERAGE=ON -DCMAKE_CXX_COMPILER="g++-6" ..
       - make
       - make test
+      - mdkir build
       - cd ..
       - |
         coveralls --build-root build --gcov-options '\-lp' \

@@ -1,3 +1,7 @@
+include(ExternalProject)
+
+find_package(Git REQUIRED)
+
 add_subdirectory(googletest)
 
 ## ------------------------------------------------------------------------------

@@ -4,9 +4,6 @@ project(ci_template C CXX)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-include(ExternalProject)
-find_package(Git REQUIRED)
-
 # ------------------------------------------------------------------------------
 # Includes
 # ------------------------------------------------------------------------------
@@ -24,8 +21,7 @@ add_subdirectory(src)
 # ------------------------------------------------------------------------------
 # Custom Libraries
 # ------------------------------------------------------------------------------
-# Note: could do ${HEADER_FILES} ${SOURCE_FILES}
-# OR a GLOB RECURSE to get all .h .c .cpp files in target folders
+# Note: "glob recurse" to get all .h .c .cpp files in target folders ?
 add_library(project_src_lib STATIC include/hello.h src/hello.cpp)
 
 # ------------------------------------------------------------------------------
