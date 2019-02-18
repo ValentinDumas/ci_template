@@ -1,0 +1,28 @@
+os: Visual Studio 2017
+platform: x64
+
+#
+# Custom environment variables
+#
+environment:
+  global:
+    CYG_ROOT: C:\cygwin_ci_base
+    CYG_BASH: C:\cygwin_ci_base\bin\bash
+    CYG_MIRROR: http://mirrors.kernel.org/sourceware/cygwin/
+    CYG_PACKAGES: git,make,gcc-core,gcc-g++,cmake
+
+test: off
+
+#
+# Build
+#
+build_script:
+  #
+  # Visual Studio (MSBuild)
+  #
+  - mkdir build_msbuild
+  - cd build_msbuild
+  - cmake -DWINDOWS=1 -G "Visual Studio 15 2017 Win64" ..
+  - msbuild ci_base.sln
+  # - ctest
+  - cd ..
