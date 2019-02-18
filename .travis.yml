@@ -229,7 +229,7 @@ matrix:
           -e build/CMakeFiles/3.8.0 \
           -e build/CMakeFiles/feature_tests.c \
           -e build/CMakeFiles/feature_tests.cxx
-          
+
   #
   # Google Address Sanitizer
   #
