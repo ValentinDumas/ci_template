@@ -186,9 +186,11 @@ matrix:
           - gcc-6
           - g++-6
     script:
-      - cmake -DENABLE_COVERAGE=ON -DCMAKE_CXX_COMPILER="g++-6" ..
+      - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
+      - export CXX_FLAGS=${CXX_FLAGS}" "${ENV_CXX_FLAGS}
+      - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DENABLE_COVERAGE=ON -DCMAKE_CXX_COMPILER="g++-6" ..
       - make
-      - make test
+      - make ci_template_coverage
       - cd ..
       - bash <(curl -s https://codecov.io/bash)
 
