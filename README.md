@@ -138,7 +138,7 @@ And if you need a specific compiler for Linux, I suggest installing a GCC or Cla
 
     AND / OR
 
-    sudo apt-get install clang-3.8 
+    sudo apt-get install clang-3.8
 
 **Windows (Visual Studio)**
 Install the following packages:
@@ -184,7 +184,7 @@ git diff --check provides a simple way to detect when whitespace errors has been
         git diff --check HEAD^
         exit -1
       fi
-      
+
 This check simply runs git diff --check, which returns with an error if the check fails. If this occurs, the diff is displayed for the user to see.
 
 ### Codecov.
@@ -327,7 +327,6 @@ To compile and install this project template, use the following instructions:
 ## 6. External Dependencies
 This project provides some externals dependencies already included:
 -   **googletest**, test / mock library.
-
 -   **CUDA**, coming soon...
 
 ## 7. How to adapt this project to your needs
