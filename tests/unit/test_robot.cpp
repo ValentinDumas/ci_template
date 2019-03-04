@@ -1,9 +1,13 @@
 //
-// Created by Spark on 15/02/2019.
+// Created by Spark on 22/02/2019.
 //
 
 #include <gtest/gtest.h>
-#include <hello.h>
+
+TEST(TestSuiteBis, NonBis)
+{
+    EXPECT_EQ(8,8);
+}
 
 TEST(TestSuiteEquality, EQual)
 {

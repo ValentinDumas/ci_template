@@ -1,75 +1,75 @@
+# ------------------------------------------------------------------------------
+# CMake Version
+# ------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.6)
+
+# ------------------------------------------------------------------------------
+# Project: name and languages
+# ------------------------------------------------------------------------------
 project(ci_template C CXX)
 
+# ------------------------------------------------------------------------------
+# CMake Options
+# ------------------------------------------------------------------------------
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-enable_testing()
-
-# ------------------------------------------------------------------------------
-# Includes
-# ------------------------------------------------------------------------------
-include_directories(deps) # Incude all dependencies & external libraries
-include_directories(${PROJECT_SOURCE_DIR}/include) # current project includes
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR}) # Gtest includes
-
-# --------------
-# Call Others CMakeLists
-# --------------
-add_subdirectory(deps)
-#add_subdirectory(include)
-add_subdirectory(src)
-
-# ------------------------------------------------------------------------------
-# Custom Libraries
-# ------------------------------------------------------------------------------
-# Note: "glob recurse" to get all .h .c .cpp files in target folders ?
-add_library(project_src_lib STATIC include/hello.h src/hello.cpp)
-
-# ------------------------------------------------------------------------------
-# Tests
-# ------------------------------------------------------------------------------
-include(CTest) # enable_tests()
-
-
-# ------------------------------------------------------------------------------
-# OS Specific Options
-# ------------------------------------------------------------------------------
-if (APPLE)
-    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-    add_definitions(-D__GLIBCXX__)
-endif (APPLE)
-
-#option(CMAKE_USE_WIN32_THREADS_INIT "using WIN32 threads" ON)
-option(gtest_disable_pthreads "Disable uses of pthreads in gtest." ON)
 
 # ------------------------------------------------------------------------------
 # Coverage
 # ------------------------------------------------------------------------------
+add_library(coverage_config INTERFACE)
+option(ENABLE_COVERAGE "Enable coverage reporting" OFF)
 if(ENABLE_COVERAGE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g ")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftest-coverage")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+    # Add required flags (GCC & LLVM/Clang)
+    target_compile_options(coverage_config INTERFACE
+            -O0        # no optimization
+            -g         # generate debug info
+            --coverage # sets all required flags
+            )
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+        target_link_options(coverage_config INTERFACE --coverage)
+    else()
+        target_link_libraries(coverage_config INTERFACE --coverage)
+    endif()
+endif(ENABLE_COVERAGE)
+
+# ------------------------------------------------------------------------------
+# Warnings
+# ------------------------------------------------------------------------------
+add_library(warnings_config INTERFACE)
+
+if(MSVC)
+    target_compile_options(warnings_config INTERFACE /W4)
+else()
+    target_compile_options(warnings_config INTERFACE -Wall -std=c++14)
+    #target_compile_options(warnings_config INTERFACE -Wall -Wextra -Wpedantic -std=c++14)
 endif()
 
-# ------------------------
-# Unit Tests
-# ------------------------
-if(WINDOWS)
-    message("Running on windows.. do not launch tests")
-else()
-    set(PROJECT_TEST_FILES test/test_hello.cpp)
+# ------------------------------------------------------------------------------
+# Includes
+# ------------------------------------------------------------------------------
+include_directories(deps) # include deps' folder. Note that you could include ${some_dep_include_dirs} from deps folder in order to be more precise at folder inclusion.
+include_directories(deps/externals/googletest/googletest/include)
+include_directories(deps/externals/googletest/googlemock/include)
+include_directories(include) # DEBT: should be remove as the files inside includes will be "target_include_directories"
 
-    add_executable(tests ${PROJECT_TEST_FILES})
+# ------------------------------------------------------------------------------
+# Dependencies (+ externals)
+# ------------------------------------------------------------------------------
+add_subdirectory(deps)
 
-    # Standard linking to gtest stuff.
-    #set(THREADS_PREFER_PTHREAD_FLAG ON)
-    target_link_libraries(tests  gtest gtest_main)
-    target_link_libraries(tests project_src_lib)
+# ------------------------------------------------------------------------------
+# Sources
+# ------------------------------------------------------------------------------
+add_subdirectory(src)
 
-    # This is so you can do 'make test' to see all your tests run, instead of
-    # manually running the executable runUnitTests to see those specific tests.
-    add_test(tests tests)
+# ------------------------------------------------------------------------------
+# CTest -> testing
+# ------------------------------------------------------------------------------
+option (BUILD_TESTING "Build the testing tree." ON)
+# Only build tests if we are the top-level project
+# Allows this to be used by super projects with `add_subdirectory`
+if (BUILD_TESTING AND (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+    include(CTest)
+    add_subdirectory(tests)
 endif()

@@ -8,13 +8,13 @@
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "CI Hello World"
+PROJECT_NAME           = "[C++] CI Template"
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "A simple example of how to setup a complete CI environment for C and C++"
+PROJECT_BRIEF          = "An example of how to setup a complete CI environment for C and C++ with CMake."
 
 # The INPUT tag is used to specify the files and/or directories that contain
 # documented source files. You may enter file names like myfile.cpp or
@@ -22,7 +22,7 @@ PROJECT_BRIEF          = "A simple example of how to setup a complete CI environ
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = include src
+INPUT                  = include src deps
 
 #---------------------------------------------------------------------------
 # Shared
@@ -742,7 +742,7 @@ INPUT_ENCODING         = UTF-8
 # *.md, *.mm, *.dox, *.py, *.f90, *.f, *.for, *.tcl, *.vhd, *.vhdl, *.ucf,
 # *.qsf, *.as and *.js.
 
-FILE_PATTERNS          = *.c *.cpp *.h
+FILE_PATTERNS          = *.h *.hpp *.c *.cpp
 
 # The RECURSIVE tag can be used to specify whether or not subdirectories should
 # be searched for input files as well.
@@ -773,7 +773,13 @@ EXCLUDE_SYMLINKS       = NO
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories for example use the pattern */test/*
 
-EXCLUDE_PATTERNS       =
+EXCLUDE_PATTERNS       = */externals/*
+EXCLUDE_PATTERNS       += */docs/*
+EXCLUDE_PATTERNS       += */doc/*
+EXCLUDE_PATTERNS       += */.git/*
+EXCLUDE_PATTERNS       += */.idea/*
+EXCLUDE_PATTERNS       += */.vs/*
+EXCLUDE_PATTERNS       += */build/*
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
