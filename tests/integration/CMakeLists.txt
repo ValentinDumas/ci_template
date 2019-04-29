@@ -1,26 +1,35 @@
 # ------------------------------------------------------------------------------
-# Integration Tests Files
+# File: CMakeLists.txt
+# Created by Spark on 28/04/2019.
 # ------------------------------------------------------------------------------
-set(PROJECT_INTEGRATION_TEST_FILES test_robot.cpp) # without main executable
+
+project(integration_tests)
 
 # ------------------------------------------------------------------------------
-# Integration Tests Executable
+# Target details
 # ------------------------------------------------------------------------------
-add_executable(integration_tests test_integration_main.cpp ${PROJECT_INTEGRATION_TEST_FILES})
-target_link_libraries(integration_tests PRIVATE ${EXTERNAL_MODULES} ${PROJECT_SOURCE_MODULES}) #Note: see if glfw has to be included...
-target_compile_definitions(integration_tests PRIVATE test_integration_main=main)
+GetRecursiveItemsFromPath(${PROJECT_NAME}_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR} "*.cpp")
+set(${PROJECT_NAME}_INCLUDE_DIRS "")
+set(${PROJECT_NAME}_LIBRARIES ${TESTS_LIBRARIES} ${PROJECT_SOURCE_MODULES})
+set(${PROJECT_NAME}_COVERAGE ON)
+set(${PROJECT_NAME}_WARNINGS OFF)
 
 # ------------------------------------------------------------------------------
-# Integration Tests: console & coverage
+# Target executable
 # ------------------------------------------------------------------------------
-add_test(integration_tests integration_tests)
+add_custom_executable(${PROJECT_NAME} "${${PROJECT_NAME}_SOURCE_FILES}" PUBLIC "${${PROJECT_NAME}_INCLUDE_DIRS}" "${${PROJECT_NAME}_LIBRARIES}" ${PROJECT_NAME}_COVERAGE ${PROJECT_NAME}_WARNINGS)
 
 # ------------------------------------------------------------------------------
-# Unit Tests: Visual Studio
+# Create integration tests
 # ------------------------------------------------------------------------------
-# Add tests individually if MSVC
-#if(MSVC)
-#    message("Import tests for MSVC environment")
-#    # Note: possibility to perform a 'add_subdirectory' here and then 'CreateTest()' in that directory
-#    CreateTest(test_complex) # not working with ctest on appveyor ?
-#endif()
+macro(CreateIntegrationTest test_name relative_test_dir)
+    CreateTest(integration ${test_name} ${relative_test_dir} "${${PROJECT_NAME}_LIBRARIES}")
+endmacro()
+
+# Note: Write the name and the relative directory for a test you want to create.
+CreateIntegrationTest(test_robot ${CMAKE_CURRENT_SOURCE_DIR})
+
+# ------------------------------------------------------------------------------
+# Integration tests subdirectories
+# ------------------------------------------------------------------------------
+# Note: All subdirectories containing can be written there.

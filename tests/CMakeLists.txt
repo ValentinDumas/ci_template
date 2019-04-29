@@ -1,35 +1,31 @@
 # ------------------------------------------------------------------------------
-# Dependency Libraries: from "deps" and / or "externals"
+# File: CMakeLists.txt
+# Created by Spark on 28/04/2019.
 # ------------------------------------------------------------------------------
-set(EXTERNAL_MODULES gtest gtest_main gmock gmock_main)
+
+# TODO (note): keep an eye on PROJECT_SOURCE_MODULES: as the tests automatically link against all project modules, it may trigger a "Coverage report error" on CodeCov if a module is linked to glfw or glad.
+include_directories(${gtest_SOURCE_DIR}/include)
+include_directories(${gmock_SOURCE_DIR}/include)
 
 # ------------------------------------------------------------------------------
-# Project Libraries: from "src" (sources)
+# Test Libraries
 # ------------------------------------------------------------------------------
-set(PROJECT_SOURCE_MODULES project_src_lib)
+set(TESTS_LIBRARIES gtest gtest_main gmock gmock_main)
 
 # ------------------------------------------------------------------------------
-# Testing Mode: messages
+# Project Modules (all modules in a list)
 # ------------------------------------------------------------------------------
-# Note: Default testing mode as STANDALONE (offline)
-if(ONLINE_TESTING)
-    message("Tests are configured in ONLINE mode")
-else()
-    message("Tests are configured in STANDALONE mode")
-endif()
+get_property_by_name(PROJECT_SOURCE_MODULES P_PROJECT_SOURCE_MODULES)
 
 # ------------------------------------------------------------------------------
-# Visual Studio / CTest coverage one by one
+# Create CTest tests one by one --> detailed test execution (usefull for bot VS and Online testing)
 # ------------------------------------------------------------------------------
-#function(CreateTest TYPE NAME)
-#	set(SAMPLE_NAME ${TYPE}_${NAME})
-#	add_executable(${SAMPLE_NAME} ${NAME}.cpp)
-#	target_link_libraries(${SAMPLE_NAME} PRIVATE ${EXTERNAL_MODULES} ${PROJECT_SOURCE_MODULES}) #Note: see if glfw has to be included...
-#
-#	add_test(
-#		NAME ${SAMPLE_NAME}
-#		COMMAND $<TARGET_FILE:${SAMPLE_NAME}> )
-#endfunction()
+macro(CreateTest TYPE NAME PATH_TO_TEST ADDITIONAL_TESTS_DEPENDENCIES)
+	set(TEST_NAME ${TYPE}_${NAME})
+	add_executable(${TEST_NAME} ${PATH_TO_TEST}/${NAME}.cpp)
+	target_link_libraries(${TEST_NAME} PRIVATE ${TESTS_LIBRARIES} ${ADDITIONAL_TESTS_DEPENDENCIES} coverage_config) #Note: no detailed warnings (from gtest macro)
+    add_test(NAME ${TEST_NAME} COMMAND $<TARGET_FILE:${TEST_NAME}>)
+endmacro()
 
 # ------------------------------------------------------------------------------
 # Main Tests

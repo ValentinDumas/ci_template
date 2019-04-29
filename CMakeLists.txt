@@ -1,70 +1,83 @@
 # ------------------------------------------------------------------------------
-# CMake Version
+# CMake version
 # ------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.6)
 
 # ------------------------------------------------------------------------------
-# Project: name and languages
+# Load tools and functions
+# ------------------------------------------------------------------------------
+add_subdirectory(tools)
+
+# ------------------------------------------------------------------------------
+# Project information
 # ------------------------------------------------------------------------------
 project(ci_template C CXX)
 
 # ------------------------------------------------------------------------------
-# CMake Options
+# CMake build configuration: Debug or Release
 # ------------------------------------------------------------------------------
+# set(CMAKE_BUILD_TYPE Debug)
+# message(CMAKE Build Type => ${CMAKE_BUILD_TYPE})
+
+# ------------------------------------------------------------------------------
+# Other CMake options
+# ------------------------------------------------------------------------------
+# set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# ------------------------------------------------------------------------------
-# Coverage
-# ------------------------------------------------------------------------------
-add_library(coverage_config INTERFACE)
-option(ENABLE_COVERAGE "Enable coverage reporting" OFF)
-if(ENABLE_COVERAGE)
-    # Add required flags (GCC & LLVM/Clang)
-    target_compile_options(coverage_config INTERFACE
-            -O0        # no optimization
-            -g         # generate debug info
-            --coverage # sets all required flags
-            )
-    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
-        target_link_options(coverage_config INTERFACE --coverage)
-    else()
-        target_link_libraries(coverage_config INTERFACE --coverage)
-    endif()
-endif(ENABLE_COVERAGE)
-
-# ------------------------------------------------------------------------------
-# Warnings
-# ------------------------------------------------------------------------------
-add_library(warnings_config INTERFACE)
-
+# Turn off shared libs to manage static/shared libraries
+set(BUILD_SHARED_LIBS OFF)
 if(MSVC)
-    target_compile_options(warnings_config INTERFACE /W4)
+    set(BUILD_SHARED_LIBS OFF) # force STATIC builds on MSVC
+endif()
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__STDC_CONSTANT_MACROS")
+# set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # enable it before using "clang tidy"
+
+# Note: Can be OFF when testing (CI). Turn ON only to build an executable directly in project instead of CMake binary folder
+set(BUILD_EXECUTABLE_IN_PROJECT_TREE OFF)
+
+# ------------------------------------------------------------------------------
+# Testing options
+# ------------------------------------------------------------------------------
+#Note: If ONLINE OR STANDALONE_WITH_NOEXECUTABLE Then
+set(ONLINE_TESTING ON)
+set(ONLINE_MODE ${ONLINE_TESTING})
+if(ONLINE_MODE)
+    message("Tests are configured in ONLINE mode")
 else()
-    target_compile_options(warnings_config INTERFACE -Wall -std=c++14)
-    #target_compile_options(warnings_config INTERFACE -Wall -Wextra -Wpedantic -std=c++14)
+    message("Tests are configured in STANDALONE mode")
+    set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} "-static") # include gcc libs
+    if(BUILD_EXECUTABLE_IN_PROJECT_TREE)
+        # TODO: only apply to concerned target, as main target (ci_opengl_template) for instance
+        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}\\bin") # sure ?
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}\\bin") # TODO: change to lib
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}\\bin\\static") # TODO: change to lib/static
+    else()
+        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}\\bin") # sure ?
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}\\bin") # TODO: change to lib
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}\\bin\\static") # TODO: change to lib/static
+    endif()
 endif()
 
 # ------------------------------------------------------------------------------
-# Includes
+# Assets
 # ------------------------------------------------------------------------------
-include_directories(deps) # include deps' folder. Note that you could include ${some_dep_include_dirs} from deps folder in order to be more precise at folder inclusion.
-include_directories(deps/externals/googletest/googletest/include)
-include_directories(deps/externals/googletest/googlemock/include)
-include_directories(include) # DEBT: should be remove as the files inside includes will be "target_include_directories"
+add_subdirectory(assets)
 
 # ------------------------------------------------------------------------------
-# Dependencies (+ externals)
+# External dependencies
 # ------------------------------------------------------------------------------
-add_subdirectory(deps)
+#TODO: change to external && remove externals
+add_subdirectory(externals)
 
 # ------------------------------------------------------------------------------
-# Sources
+# Sources and modules
 # ------------------------------------------------------------------------------
 add_subdirectory(src)
 
 # ------------------------------------------------------------------------------
-# CTest -> testing
+# Tests
 # ------------------------------------------------------------------------------
 option (BUILD_TESTING "Build the testing tree." ON)
 # Only build tests if we are the top-level project
@@ -73,3 +86,21 @@ if (BUILD_TESTING AND (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
     include(CTest)
     add_subdirectory(tests)
 endif()
+
+# ------------------------------------------------------------------------------
+# Examples
+# ------------------------------------------------------------------------------
+set(BUILD_EXAMPLES ON)
+if(BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
+
+# ------------------------------------------------------------------------------
+# Debug information
+# ------------------------------------------------------------------------------
+get_property_by_name(SHARED_LIBRARIES P_SHARED_LIBRARIES)
+get_property_by_name(STATIC_LIBRARIES P_STATIC_LIBRARIES)
+get_property_by_name(INTERFACE_LIBRARIES P_INTERFACE_LIBRARIES)
+message("SHARED LIBRARIES for the whole solution: ${SHARED_LIBRARIES}")
+message("STATIC LIBRARIES for the whole solution: ${STATIC_LIBRARIES}")
+message("INTERFACE LIBRARIES for the whole solution: ${INTERFACE_LIBRARIES}")

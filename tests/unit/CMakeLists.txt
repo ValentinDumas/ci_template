@@ -1,26 +1,36 @@
 # ------------------------------------------------------------------------------
-# Unit Tests Files
+# File: CMakeLists.txt
+# Created by Spark on 28/04/2019.
 # ------------------------------------------------------------------------------
-set(PROJECT_UNIT_TEST_FILES test_robot.cpp)
+
+project(unit_tests)
 
 # ------------------------------------------------------------------------------
-# Unit Tests Executable
+# Target details
 # ------------------------------------------------------------------------------
-add_executable(unit_tests test_unit_main.cpp test_robot.cpp test_complex.cpp)
-target_link_libraries(unit_tests PRIVATE ${EXTERNAL_MODULES} ${PROJECT_SOURCE_MODULES}) #Note: see if glfw has to be included...
-target_compile_definitions(unit_tests PRIVATE test_unit_main=main)
+GetRecursiveItemsFromPath(${PROJECT_NAME}_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR} "*.cpp")
+set(${PROJECT_NAME}_INCLUDE_DIRS "")
+set(${PROJECT_NAME}_LIBRARIES ${TESTS_LIBRARIES} ${PROJECT_SOURCE_MODULES})
+set(${PROJECT_NAME}_COVERAGE ON)
+set(${PROJECT_NAME}_WARNINGS OFF)
 
 # ------------------------------------------------------------------------------
-# Unit Tests: console & coverage
+# Target executable
 # ------------------------------------------------------------------------------
-add_test(unit_tests unit_tests)
+add_custom_executable(${PROJECT_NAME} "${${PROJECT_NAME}_SOURCE_FILES}" PUBLIC "${${PROJECT_NAME}_INCLUDE_DIRS}" "${${PROJECT_NAME}_LIBRARIES}" ${PROJECT_NAME}_COVERAGE ${PROJECT_NAME}_WARNINGS)
 
 # ------------------------------------------------------------------------------
-# Unit Tests: Visual Studio
+# Create unit tests
 # ------------------------------------------------------------------------------
-# Note: Add tests individually if MSVC
-#if(MSVC)
-#    message("Import tests for MSVC environment")
-#    # Note: possibility to perform a 'add_subdirectory' here and then 'CreateTest()' in that directory
-#    CreateTest(test_complex) # not working with ctest on appveyor ?
-#endif()
+macro(CreateUnitTest test_name relative_test_dir)
+    CreateTest(unit ${test_name} "${relative_test_dir}" "${${PROJECT_NAME}_LIBRARIES}")
+endmacro()
+
+# Note: Write the name and the relative directory for a test you want to create.
+CreateUnitTest(test_robot ${CMAKE_CURRENT_SOURCE_DIR})
+
+# ------------------------------------------------------------------------------
+# Unit tests subdirectories
+# ------------------------------------------------------------------------------
+# Note: All subdirectories containing can be written there.
+add_subdirectory(mathematics)
