@@ -25,6 +25,8 @@ project(ci_template C CXX)
 # set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD 14)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__STDC_CONSTANT_MACROS")
+
 # Turn off shared libs to manage static/shared libraries
 set(BUILD_SHARED_LIBS OFF)
 if(MSVC)
