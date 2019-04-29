@@ -2,7 +2,7 @@
 
 #include "mathematics/complex.hpp"
 
-#include "LuaScript.h"
+#include "lua/LuaScript.h"
 
 /// Main program function
 int main(int argc, char **argv)
