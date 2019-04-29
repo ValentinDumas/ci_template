@@ -4,9 +4,13 @@
 
 #include "lua/LuaScript.h"
 
+#include "utils/types.h"
+
 /// Main program function
 int main(int argc, char **argv)
 {
+    auto t_index = getTypeIndex<int>();
+
     Complex complex(4,5);
 
     std::cout << "complex.getImag() = " << complex.getImag() << std::endl;
