@@ -74,6 +74,13 @@ AddLibraryToProject(gmock)
 AddLibraryToProject(gmock_main)
 
 # ------------------------------------------------------------------------------
+#
+# PUT STATIC LIBRARIES HERE
+#
+# ------------------------------------------------------------------------------
+set(BUILD_SHARED_LIBS OFF)
+
+# ------------------------------------------------------------------------------
 # LuaJIT 2.0.1
 # ------------------------------------------------------------------------------
 set(BUILD_LUAJIT ON)
@@ -82,13 +89,6 @@ if(BUILD_LUAJIT)
     AddLibraryToProject(liblua)
     target_include_directories(liblua PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/luajit_2.0.3/src)
 endif()
-
-# ------------------------------------------------------------------------------
-#
-# PUT STATIC LIBRARIES HERE
-#
-# ------------------------------------------------------------------------------
-set(BUILD_SHARED_LIBS OFF)
 
 # ------------------------------------------------------------------------------
 # Google Sanitizers
