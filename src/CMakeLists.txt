@@ -1,4 +1,4 @@
-project(ci_template)
+project(ci_template C CXX)
 
 create_property(P_PROJECT_SOURCE_MODULES "")
 

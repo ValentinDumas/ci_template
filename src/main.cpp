@@ -5,10 +5,23 @@
 #include "lua/LuaScript.h"
 
 #include "utils/types.h"
+#include "utils/FileSystem.h"
 
 /// Main program function
 int main(int argc, char **argv)
 {
+
+
+
+    auto path = utils::filesystem::get_current_path();
+    std::cout << "Current main path: " << path << std::endl;
+
+    utils::filesystem::list_directory_entries(path);
+
+    auto a = utils::filesystem::get_entry(path + "\\ci_template.exe");
+
+
+
     auto t_index = getTypeIndex<int>();
 
     Complex complex(4,5);

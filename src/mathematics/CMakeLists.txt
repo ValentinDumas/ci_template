@@ -1,4 +1,4 @@
-project(mathematics)
+project(mathematics C CXX)
 
 # ------------------------------------------------------------------------------
 # Mathematics Target Details

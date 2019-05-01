@@ -5,17 +5,19 @@ project(utils)
 # ------------------------------------------------------------------------------
 # Mathematics Target Details
 # ------------------------------------------------------------------------------
-set(${PROJECT_NAME}_SOURCE_FILES types.cpp)
 
 # ------------------------------------------------------------------------------
 # Mathematics Target Library
 # ------------------------------------------------------------------------------
-add_library(${PROJECT_NAME} INTERFACE)
+add_library(${PROJECT_NAME} STATIC FileSystem.cpp)
 
 target_include_directories(${PROJECT_NAME}
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/.. ${CMAKE_CURRENT_SOURCE_DIR}) # Note: see if it includes .hpp && .cpp OR only .cpp files
+        PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/.. PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}) # Note: see if it includes .hpp && .cpp OR only .cpp files
 
-target_link_libraries(${PROJECT_NAME} INTERFACE coverage_config) # Include code-coverage & warnings settings
+target_link_libraries(${PROJECT_NAME} PUBLIC cppfs coverage_config) # Include code-coverage & warnings settings
+
+set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
 add_data_to_property(P_PROJECT_SOURCE_MODULES ${PROJECT_NAME})
+
 AddLibraryToProject(${PROJECT_NAME})
