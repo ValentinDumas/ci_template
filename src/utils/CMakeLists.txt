@@ -18,6 +18,10 @@ target_link_libraries(${PROJECT_NAME} PUBLIC cppfs coverage_config) # Include co
 
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
+if(MSVC)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE MSVC_PLATFORM)
+endif()
+
 add_data_to_property(P_PROJECT_SOURCE_MODULES ${PROJECT_NAME})
 
 AddLibraryToProject(${PROJECT_NAME})
