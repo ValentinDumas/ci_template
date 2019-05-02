@@ -14,11 +14,11 @@
 
 #include <vector>
 
-//#if __cplusplus
-//    #define EXTERN extern "C"
-//#else
-//    #define EXTERN
-//#endif
+#if __cplusplus
+    #define EXTERN extern "C"
+#else
+    #define EXTERN
+#endif
 
 namespace utils {
     namespace filesystem {
@@ -41,7 +41,7 @@ namespace utils {
 
         cppfs::FileHandle get_entry(const std::string &path);
 
-        extern "C" int external_number;
+        EXTERN int external_number;
 
         //EXTERN std::string current_working_path;
     }

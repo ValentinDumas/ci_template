@@ -35,10 +35,15 @@ std::string get_filename(const std::string &path) {
 
 bool utils::filesystem::set_working_path(const std::string &path) {
     cppfs::FileHandle file_handle = cppfs::fs::open(path);
+
     if (!file_handle.exists())
+    {
         std::cout << "[Error] Path " << path << " does not exists on the current filesystem" << std::endl;
-    else
-        current_working_path = path;
+        return false;
+    }
+
+    current_working_path = path;
+    return true;
 }
 
 void utils::filesystem::get_tree_filepaths(std::unique_ptr<cppfs::Tree> & file_tree) {
