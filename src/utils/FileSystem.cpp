@@ -19,7 +19,11 @@
 #define GetCurrentDir getcwd
 #endif
 
-int external_number = 0;
+extern "C"
+{
+    int external_number = 0;
+};
+
 static std::string current_working_path = "";
 //static cppfs::FileHandle current_working_dir; // private scope
 
