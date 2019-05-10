@@ -4,9 +4,7 @@
 
 #include "lua/LuaScript.h"
 
-#include "utils/types.h"
-
-#include "utils/FileSystem.h"
+#include "utils/FileSystem.hpp"
 
 /// Main program function
 int main(int argc, char **argv)
@@ -15,14 +13,6 @@ int main(int argc, char **argv)
     std::cout << "Current main path: " << path << std::endl;
 
     utils::filesystem::print_directory_entries(path);
-
-    auto a = utils::filesystem::get_entry(path + "\\ci_template.exe");
-
-    std::cout << "External number's value: " << utils::filesystem::external_number << std::endl;
-    utils::filesystem::print_directory_entries("");
-    std::cout << "External number's value: "  << utils::filesystem::external_number << std::endl;
-
-    auto t_index = getTypeIndex<int>();
 
     Complex complex(4,5);
 
@@ -40,7 +30,8 @@ int main(int argc, char **argv)
     std::cout<<"Filename:"<<filename<<std::endl;
     std::cout<<"HP:"<<hp<<std::endl;
 
-    utils::filesystem::get_tree(path);
+    std::vector<std::string> acquired_paths;
+    utils::filesystem::get_tree(path, acquired_paths);
 
     std::cout << "Setup status: SUCCESS !" << std::endl;
     // std::cin.get();
