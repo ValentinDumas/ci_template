@@ -2,8 +2,8 @@
 // Created by Spark on 29/04/2019.
 //
 
-#ifndef DREAMINENGINE_FILESYSTEM_HPP
-#define DREAMINENGINE_FILESYSTEM_HPP
+#ifndef DREAMINENGINE_FILESYSTEM_H
+#define DREAMINENGINE_FILESYSTEM_H
 
 #include <vector>
 #include <string>
@@ -45,4 +45,4 @@ namespace utils {
     }
 }
 
-#endif //DREAMINENGINE_FILESYSTEM_HPP
+#endif //DREAMINENGINE_FILESYSTEM_H
