@@ -9,7 +9,7 @@ function(CopyAssets source_path destination_path)
             string(REPLACE "${source_path}" "${destination_path}" asset_destination ${asset_source})
             string(REPLACE "/" "\\" asset_source_formatted ${asset_source})
             string(REPLACE "/" "\\" asset_destination_formatted ${asset_destination})
-            configure_file(${asset_source_formatted} ${asset_destination_formatted})
+            configure_file(${asset_source_formatted} ${asset_destination_formatted} COPYONLY)
         endif()
     endforeach ()
 endfunction()
@@ -27,12 +27,14 @@ endfunction()
 function(MoveNeededResourcesToTarget target_name) # TODO: add "required_libraries" parameter to avoid copying all dlls for each target even when they don't need it.
     get_property_by_name(SHARED_LIBRARIES P_SHARED_LIBRARIES)
 
+    MoveAssetsToTarget(${CMAKE_SOURCE_DIR}/assets ${target_name})
+
     if(ONLINE_MODE) # online --> move assets to CMake's default binary folder
         if(MSVC)
             message("MSVC building...")
-            MoveAssetsToTarget("${CMAKE_SOURCE_DIR}\\assets" ${target_name})
+            MoveAssetsToTarget(${CMAKE_SOURCE_DIR}/assets ${target_name})
         else()
-            MoveAssetsToTarget("${CMAKE_SOURCE_DIR}\\assets" ${target_name})
+            MoveAssetsToTarget(${CMAKE_SOURCE_DIR}/assets ${target_name})
         endif()
         MoveMultipleLibsForTarget("${SHARED_LIBRARIES}" ${target_name})
     elseif(BUILD_EXECUTABLE_IN_PROJECT_TREE AND (target_name MATCHES "test")) # STANDALONE && EXE BUILDING in project tree
@@ -100,7 +102,7 @@ function(add_custom_executable target_name sources includes_scope includes_strin
     target_link_libraries(${target_name} PRIVATE ${libraries_string})
 
     if (MSVC)
-        target_compile_definitions(${target_name} PRIVATE MSVC_PLATFORM)
+        target_compile_definitions(${target_name} PUBLIC MSVC_PLATFORM)
     endif()
 
     MoveNeededResourcesToTarget(${target_name})
@@ -192,7 +194,7 @@ function(MoveFolderToTarget target_name source_path path_relative_to_target)
     add_custom_command(TARGET ${target_name}
             PRE_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${source_path}
-            $<TARGET_FILE_DIR:${target_name}>\\${path_relative_to_target})
+            $<TARGET_FILE_DIR:${target_name}>/${path_relative_to_target})
 endfunction()
 
 # ------------------------------------------------------------------------------
