@@ -4,16 +4,9 @@
 
 #include "lua/LuaScript.h"
 
-#include "utils/FileSystem.hpp"
-
 /// Main program function
 int main(int argc, char **argv)
 {
-    auto path = utils::filesystem::get_current_path();
-    std::cout << "Current main path: " << path << std::endl;
-
-    utils::filesystem::print_directory_entries(path);
-
     Complex complex(4,5);
 
     std::cout << "complex.getImag() = " << complex.getImag() << std::endl;
@@ -29,9 +22,6 @@ int main(int argc, char **argv)
     std::cout<<"Position X = "<<posX<<", Y = "<<posY<<std::endl;
     std::cout<<"Filename:"<<filename<<std::endl;
     std::cout<<"HP:"<<hp<<std::endl;
-
-    std::vector<std::string> acquired_paths;
-    utils::filesystem::get_tree(path, acquired_paths);
 
     std::cout << "Setup status: SUCCESS !" << std::endl;
     // std::cin.get();

@@ -74,12 +74,6 @@ AddLibraryToProject(gmock)
 AddLibraryToProject(gmock_main)
 
 # ------------------------------------------------------------------------------
-# CPPFS (Cross-Platform & Portable FileSystem library)
-# ------------------------------------------------------------------------------
-add_subdirectory(cppfs)
-AddLibraryToProject(cppfs)
-
-# ------------------------------------------------------------------------------
 # LuaJIT 2.0.1
 # ------------------------------------------------------------------------------
 set(BUILD_LUAJIT ON)
